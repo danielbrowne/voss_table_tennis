@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from .models import Person, Game
 
 
-RATINGS_CONSTANT = 32
+RATINGS_CONSTANT = 32.0
 
 
 def index(request):
@@ -65,12 +65,12 @@ def update_ratings(request):
     winner_person = get_object_or_404(Person, username=winner)
     loser_person = get_object_or_404(Person, username=loser)
 
-    win_expected_win_ratio = 1.0 / (1 + 10**((winner_person.rating - loser_person.rating) / 400.0))
-    lose_expected_win_ratio = 1 - win_expected_win_ratio
+    win_expected_win_ratio = 1.0 / (1.0 + 10.0**((winner_person.rating - loser_person.rating) / 400.0))
+    lose_expected_win_ratio = 1.0 - win_expected_win_ratio
     win_rating_change = RATINGS_CONSTANT * win_expected_win_ratio * win_score
     lose_rating_change = RATINGS_CONSTANT * lose_expected_win_ratio * lose_score
 
-    rating_change = win_rating_change - lose_rating_change
+    rating_change = round(win_rating_change - lose_rating_change)
 
     winner_person.rating += rating_change
     loser_person.rating -= rating_change
